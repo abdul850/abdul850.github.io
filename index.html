@@ -40,6 +40,7 @@
             <input id="item-image" type="file" accept="image/*" />
             <button type="button" id="camera-btn" class="ghost" style="margin-top:8px;">Take Photo</button>
             <input id="camera-input" type="file" accept="image/*" capture="environment" style="display:none;" />
+            <div id="camera-preview" style="margin-top:10px;"></div>
           </label>
           <div class="actions">
             <button type="submit" class="primary">Add item</button>
@@ -62,8 +63,18 @@
       <div class="modal-content">
         <span id="close-modal" class="close">&times;</span>
         <img id="modal-image" src="" alt="Item image" class="modal-img" />
-        <h3 id="modal-name"></h3>
-        <p id="modal-price"></p>
+        <div style="margin-bottom:10px;">
+          <input id="modal-edit-name" type="text" placeholder="Item name" style="width:90%;margin-bottom:6px;font-size:1.1rem;" />
+          <input id="modal-edit-price" type="number" step="0.01" min="0" placeholder="Price" style="width:90%;margin-bottom:6px;font-size:1.1rem;" />
+        </div>
+        <div style="margin-bottom:10px;">
+          <input id="modal-edit-image" type="file" accept="image/*" style="margin-bottom:6px;" />
+          <button type="button" id="modal-camera-btn" class="ghost" style="margin-bottom:6px;">Take Photo</button>
+          <input id="modal-camera-input" type="file" accept="image/*" capture="environment" style="display:none;" />
+          <div id="modal-camera-preview"></div>
+        </div>
+        <button type="button" id="modal-save" class="primary" style="margin-right:8px;">Save</button>
+        <button type="button" id="modal-cancel" class="ghost">Cancel</button>
       </div>
     </div>
     <script src="jspdf-loader.js"></script>

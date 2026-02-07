@@ -13,6 +13,8 @@ const itemPriceInput = document.getElementById('item-price');
 const itemImageInput = document.getElementById('item-image');
 const cameraBtn = document.getElementById('camera-btn');
 const cameraInput = document.getElementById('camera-input');
+const cameraPreview = document.getElementById('camera-preview');
+let cameraImageData = '';
 const clearListBtn = document.getElementById('clear-list');
 const itemList = document.getElementById('item-list');
 const itemCount = document.getElementById('item-count');
@@ -20,8 +22,16 @@ const itemCount = document.getElementById('item-count');
 const itemModal = document.getElementById('item-modal');
 const closeModalBtn = document.getElementById('close-modal');
 const modalImage = document.getElementById('modal-image');
-const modalName = document.getElementById('modal-name');
-const modalPrice = document.getElementById('modal-price');
+const modalEditName = document.getElementById('modal-edit-name');
+const modalEditPrice = document.getElementById('modal-edit-price');
+const modalEditImage = document.getElementById('modal-edit-image');
+const modalCameraBtn = document.getElementById('modal-camera-btn');
+const modalCameraInput = document.getElementById('modal-camera-input');
+const modalCameraPreview = document.getElementById('modal-camera-preview');
+const modalSaveBtn = document.getElementById('modal-save');
+const modalCancelBtn = document.getElementById('modal-cancel');
+let modalEditIdx = null;
+let modalCameraImageData = '';
 
 // --- State ---
 let lists = {};
@@ -108,16 +118,17 @@ function renderItems() {
 }
 
 // --- Modal ---
-function showModal(item) {
+function showModal(item, idx) {
+  modalEditIdx = idx;
   modalImage.src = item.image || '';
   modalImage.style.display = item.image ? '' : 'none';
   modalImage.style.width = '220px';
   modalImage.style.height = '220px';
-  modalName.textContent = item.name || 'Unnamed';
-  modalName.style.fontSize = '2rem';
-  modalName.style.fontWeight = 'bold';
-  modalPrice.textContent = item.price ? '₹' + item.price : '';
-  modalPrice.style.fontSize = '1.5rem';
+  modalEditName.value = item.name || '';
+  modalEditPrice.value = item.price || '';
+  modalEditImage.value = '';
+  modalCameraImageData = '';
+  modalCameraPreview.innerHTML = '';
   itemModal.style.display = 'flex';
 }
 function hideModal() {
@@ -208,10 +219,12 @@ itemForm.addEventListener('submit', async e => {
   const name = itemNameInput.value.trim();
   const price = itemPriceInput.value.trim();
   let image = '';
-  // Prefer camera input if used
-  if (cameraInput.files && cameraInput.files[0]) {
-    image = await toBase64(cameraInput.files[0]);
+  // Use camera image if available
+  if (cameraImageData) {
+    image = cameraImageData;
+    cameraImageData = '';
     cameraInput.value = '';
+    cameraPreview.innerHTML = '';
   } else if (itemImageInput.files && itemImageInput.files[0]) {
     image = await toBase64(itemImageInput.files[0]);
     itemImageInput.value = '';
@@ -224,13 +237,26 @@ itemForm.addEventListener('submit', async e => {
 cameraBtn.addEventListener('click', () => {
   cameraInput.click();
 });
+
+cameraInput.addEventListener('change', async () => {
+  if (cameraInput.files && cameraInput.files[0]) {
+    cameraImageData = await toBase64(cameraInput.files[0]);
+    // Show preview
+    cameraPreview.innerHTML = `<img src="${cameraImageData}" alt="Camera photo preview" style="max-width:120px;max-height:120px;border-radius:8px;box-shadow:0 1px 4px #aaa;display:block;margin-bottom:6px;" />` +
+      '<div style="color:#2566d4;font-size:1rem;margin-bottom:4px;">Add name and price for this photo</div>';
+  }
+});
+
+cameraBtn.addEventListener('click', () => {
+  cameraInput.click();
+});
 clearListBtn.addEventListener('click', () => {
   if (currentList && confirm('Clear all items in this list?')) clearItems();
 });
 itemList.addEventListener('click', e => {
   if (e.target.classList.contains('item-detail')) {
     const idx = e.target.getAttribute('data-idx');
-    showModal(lists[currentList][idx]);
+    showModal(lists[currentList][idx], idx);
   } else if (e.target.classList.contains('item-delete')) {
     const idx = e.target.getAttribute('data-idx');
     lists[currentList].splice(idx, 1);
@@ -239,8 +265,45 @@ itemList.addEventListener('click', e => {
   }
 });
 closeModalBtn.addEventListener('click', hideModal);
+modalCancelBtn.addEventListener('click', hideModal);
 window.addEventListener('click', e => {
   if (e.target === itemModal) hideModal();
+});
+
+modalEditImage.addEventListener('change', async () => {
+  if (modalEditImage.files && modalEditImage.files[0]) {
+    modalCameraImageData = await toBase64(modalEditImage.files[0]);
+    modalCameraPreview.innerHTML = `<img src="${modalCameraImageData}" alt="Edit photo preview" style="max-width:120px;max-height:120px;border-radius:8px;box-shadow:0 1px 4px #aaa;display:block;margin-bottom:6px;" />`;
+  }
+});
+modalCameraBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  // Hide upload input while camera input is active
+  modalEditImage.style.display = 'none';
+  modalCameraInput.value = '';
+  modalCameraInput.click();
+});
+modalCameraInput.addEventListener('change', async () => {
+  if (modalCameraInput.files && modalCameraInput.files[0]) {
+    modalCameraImageData = await toBase64(modalCameraInput.files[0]);
+    modalCameraPreview.innerHTML = `<img src="${modalCameraImageData}" alt="Edit camera preview" style="max-width:120px;max-height:120px;border-radius:8px;box-shadow:0 1px 4px #aaa;display:block;margin-bottom:6px;" />`;
+  }
+  // Show upload input again after camera photo is taken
+  modalEditImage.style.display = '';
+});
+modalSaveBtn.addEventListener('click', () => {
+  if (modalEditIdx === null || !currentList) return;
+  const item = lists[currentList][modalEditIdx];
+  item.name = modalEditName.value.trim();
+  item.price = modalEditPrice.value.trim();
+  if (modalCameraImageData) {
+    item.image = modalCameraImageData;
+    modalCameraImageData = '';
+    modalCameraPreview.innerHTML = '';
+  }
+  saveLists();
+  renderItems();
+  hideModal();
 });
 
 // --- Helpers ---
