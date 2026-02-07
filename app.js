@@ -11,6 +11,8 @@ const itemForm = document.getElementById('item-form');
 const itemNameInput = document.getElementById('item-name');
 const itemPriceInput = document.getElementById('item-price');
 const itemImageInput = document.getElementById('item-image');
+const cameraBtn = document.getElementById('camera-btn');
+const cameraInput = document.getElementById('camera-input');
 const clearListBtn = document.getElementById('clear-list');
 const itemList = document.getElementById('item-list');
 const itemCount = document.getElementById('item-count');
@@ -206,13 +208,21 @@ itemForm.addEventListener('submit', async e => {
   const name = itemNameInput.value.trim();
   const price = itemPriceInput.value.trim();
   let image = '';
-  if (itemImageInput.files && itemImageInput.files[0]) {
+  // Prefer camera input if used
+  if (cameraInput.files && cameraInput.files[0]) {
+    image = await toBase64(cameraInput.files[0]);
+    cameraInput.value = '';
+  } else if (itemImageInput.files && itemImageInput.files[0]) {
     image = await toBase64(itemImageInput.files[0]);
+    itemImageInput.value = '';
   }
   addItem({ name, price, image });
   itemNameInput.value = '';
   itemPriceInput.value = '';
-  itemImageInput.value = '';
+});
+
+cameraBtn.addEventListener('click', () => {
+  cameraInput.click();
 });
 clearListBtn.addEventListener('click', () => {
   if (currentList && confirm('Clear all items in this list?')) clearItems();
