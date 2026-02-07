@@ -1,0 +1,220 @@
+/* styles.css for Item List Builder */
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f7f8fa;
+  margin: 0;
+  color: #222;
+}
+
+.page {
+  max-width: 600px;
+  margin: 32px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 24px 20px 32px 20px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.list-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.form-inline {
+  display: flex;
+  gap: 8px;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  padding: 7px 10px;
+  border: 1px solid #d0d4db;
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  background: #f9f9fb;
+  transition: border 0.2s;
+}
+input:focus, select:focus {
+  border-color: #4f8cff;
+}
+
+button {
+  padding: 7px 16px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+button.primary {
+  background: #4f8cff;
+  color: #fff;
+}
+button.primary:hover {
+  background: #2566d4;
+}
+button.danger {
+  background: #ff4f4f;
+  color: #fff;
+}
+button.danger:hover {
+  background: #d42c2c;
+}
+button.ghost {
+  background: #f3f6fa;
+  color: #4f8cff;
+  border: 1px solid #d0d4db;
+}
+button.ghost:hover {
+  background: #e6f0ff;
+}
+
+.card {
+  background: #f9f9fb;
+  border-radius: 8px;
+  padding: 18px 16px 12px 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+.field span {
+  font-size: 0.97rem;
+  margin-bottom: 3px;
+  color: #555;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.list-wrap {
+  margin-top: 18px;
+}
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.badge {
+  background: #e6f0ff;
+  color: #2566d4;
+  border-radius: 12px;
+  padding: 3px 10px;
+  font-size: 0.95rem;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid #e3e6eb;
+  border-radius: 7px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.item-thumb {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f6fa;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.item-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.no-img {
+  font-size: 2rem;
+  color: #b0b8c9;
+}
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.item-name {
+  font-weight: 500;
+  font-size: 1.08rem;
+}
+.item-price {
+  color: #4f8cff;
+  font-size: 1rem;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.25);
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 10px;
+  padding: 28px 32px 20px 32px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.13);
+  position: relative;
+  min-width: 260px;
+  max-width: 90vw;
+  text-align: center;
+}
+.close {
+  position: absolute;
+  right: 18px;
+  top: 12px;
+  font-size: 1.7rem;
+  color: #888;
+  cursor: pointer;
+}
+.modal-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background: #f3f6fa;
+}
+
+@media (max-width: 700px) {
+  .page {
+    max-width: 98vw;
+    padding: 10px 2vw 20px 2vw;
+  }
+  .modal-content {
+    padding: 18px 6vw 16px 6vw;
+  }
+}
