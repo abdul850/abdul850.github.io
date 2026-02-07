@@ -25,13 +25,14 @@ const modalImage = document.getElementById('modal-image');
 const modalEditName = document.getElementById('modal-edit-name');
 const modalEditPrice = document.getElementById('modal-edit-price');
 const modalEditImage = document.getElementById('modal-edit-image');
+const modalUploadBtn = document.getElementById('modal-upload-btn');
 const modalCameraBtn = document.getElementById('modal-camera-btn');
 const modalCameraInput = document.getElementById('modal-camera-input');
 const modalCameraPreview = document.getElementById('modal-camera-preview');
 const modalSaveBtn = document.getElementById('modal-save');
 const modalCancelBtn = document.getElementById('modal-cancel');
 let modalEditIdx = null;
-let modalCameraImageData = '';
+let modalModalImageData = '';
 
 // --- State ---
 let lists = {};
@@ -127,7 +128,8 @@ function showModal(item, idx) {
   modalEditName.value = item.name || '';
   modalEditPrice.value = item.price || '';
   modalEditImage.value = '';
-  modalCameraImageData = '';
+  modalModalImageData = '';
+  modalCameraInput.value = '';
   modalCameraPreview.innerHTML = '';
   itemModal.style.display = 'flex';
 }
@@ -270,35 +272,36 @@ window.addEventListener('click', e => {
   if (e.target === itemModal) hideModal();
 });
 
+modalUploadBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  modalEditImage.value = '';
+  modalEditImage.click();
+});
 modalEditImage.addEventListener('change', async () => {
   if (modalEditImage.files && modalEditImage.files[0]) {
-    modalCameraImageData = await toBase64(modalEditImage.files[0]);
-    modalCameraPreview.innerHTML = `<img src="${modalCameraImageData}" alt="Edit photo preview" style="max-width:120px;max-height:120px;border-radius:8px;box-shadow:0 1px 4px #aaa;display:block;margin-bottom:6px;" />`;
+    modalModalImageData = await toBase64(modalEditImage.files[0]);
+    modalCameraPreview.innerHTML = `<img src="${modalModalImageData}" alt="Edit photo preview" style="max-width:120px;max-height:120px;border-radius:8px;box-shadow:0 1px 4px #aaa;display:block;margin-bottom:6px;" />`;
   }
 });
 modalCameraBtn.addEventListener('click', (e) => {
   e.preventDefault();
-  // Hide upload input while camera input is active
-  modalEditImage.style.display = 'none';
   modalCameraInput.value = '';
   modalCameraInput.click();
 });
 modalCameraInput.addEventListener('change', async () => {
   if (modalCameraInput.files && modalCameraInput.files[0]) {
-    modalCameraImageData = await toBase64(modalCameraInput.files[0]);
-    modalCameraPreview.innerHTML = `<img src="${modalCameraImageData}" alt="Edit camera preview" style="max-width:120px;max-height:120px;border-radius:8px;box-shadow:0 1px 4px #aaa;display:block;margin-bottom:6px;" />`;
+    modalModalImageData = await toBase64(modalCameraInput.files[0]);
+    modalCameraPreview.innerHTML = `<img src="${modalModalImageData}" alt="Edit camera preview" style="max-width:120px;max-height:120px;border-radius:8px;box-shadow:0 1px 4px #aaa;display:block;margin-bottom:6px;" />`;
   }
-  // Show upload input again after camera photo is taken
-  modalEditImage.style.display = '';
 });
 modalSaveBtn.addEventListener('click', () => {
   if (modalEditIdx === null || !currentList) return;
   const item = lists[currentList][modalEditIdx];
   item.name = modalEditName.value.trim();
   item.price = modalEditPrice.value.trim();
-  if (modalCameraImageData) {
-    item.image = modalCameraImageData;
-    modalCameraImageData = '';
+  if (modalModalImageData) {
+    item.image = modalModalImageData;
+    modalModalImageData = '';
     modalCameraPreview.innerHTML = '';
   }
   saveLists();
