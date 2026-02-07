@@ -221,19 +221,27 @@ itemForm.addEventListener('submit', async e => {
   const name = itemNameInput.value.trim();
   const price = itemPriceInput.value.trim();
   let image = '';
-  // Use camera image if available
+  // Always prefer camera image if preview is shown
   if (cameraImageData) {
     image = cameraImageData;
     cameraImageData = '';
     cameraInput.value = '';
     cameraPreview.innerHTML = '';
+    itemImageInput.value = '';
   } else if (itemImageInput.files && itemImageInput.files[0]) {
     image = await toBase64(itemImageInput.files[0]);
     itemImageInput.value = '';
+    cameraInput.value = '';
+    cameraPreview.innerHTML = '';
   }
   addItem({ name, price, image });
   itemNameInput.value = '';
   itemPriceInput.value = '';
+  // Always clear both inputs and preview after add
+  cameraInput.value = '';
+  itemImageInput.value = '';
+  cameraPreview.innerHTML = '';
+  cameraImageData = '';
 });
 
 cameraBtn.addEventListener('click', () => {
